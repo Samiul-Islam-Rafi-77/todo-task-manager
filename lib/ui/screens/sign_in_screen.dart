@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/email_verifiaction_screen.dart';
+import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/utility/app_colors.dart';
 import 'package:task_manager/ui/widgets/background_widget.dart';
 
@@ -19,12 +21,12 @@ class _SignInScreenState extends State<SignInScreen> {
     return Scaffold(
       body: BackgroundWidget(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(24),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 80),
+                const SizedBox(height: 100),
                 Text(
                   'Get Started With',
                   style: Theme.of(context).textTheme.titleLarge,
@@ -32,6 +34,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(height: 24),
                 TextFormField(
                   controller: _emailTEControllar,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(hintText: 'Email'),
                 ),
                 const SizedBox(height: 8),
@@ -49,7 +52,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: Column(
                     children: [
                       TextButton(
-                        onPressed: () {},
+                        onPressed: _onTapForgotPasswordButton,
                         child: Text('Forgot Password?'),
                       ),
                       RichText(
@@ -64,7 +67,10 @@ class _SignInScreenState extends State<SignInScreen> {
                             TextSpan(
                               text: 'SIgn up',
                               style: TextStyle(color: AppColors.themeColor),
-                              recognizer: TapGestureRecognizer()..onTap = () {},
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  _onTapSignupButton();
+                                },
                             ),
                           ],
                         ),
@@ -77,6 +83,22 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  // On Tap sign up button
+  void _onTapSignupButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SignUpScreen()),
+    );
+  }
+
+  //On Tap Forgot Password
+  void _onTapForgotPasswordButton() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EmailVerifiactionScreen()),
     );
   }
 
