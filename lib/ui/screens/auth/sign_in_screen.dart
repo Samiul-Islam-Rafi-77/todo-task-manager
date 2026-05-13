@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/auth/email_verifiaction_screen.dart';
 import 'package:task_manager/ui/screens/auth/sign_up_screen.dart';
+import 'package:task_manager/ui/screens/main_buttom_nav_screen.dart';
 import 'package:task_manager/ui/utility/app_colors.dart';
 import 'package:task_manager/ui/widgets/background_widget.dart';
 
@@ -43,8 +44,9 @@ class _SignInScreenState extends State<SignInScreen> {
                   decoration: InputDecoration(hintText: 'Password'),
                 ),
                 const SizedBox(height: 16),
+                //nex page buttom 
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _onTapNextButtom,
                   child: Icon(Icons.arrow_circle_right_outlined, size: 24),
                 ),
                 const SizedBox(height: 36),
@@ -91,6 +93,14 @@ class _SignInScreenState extends State<SignInScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => SignUpScreen()),
+    );
+  }
+
+  // on Tap signin confarm
+  void _onTapNextButtom() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => MainButtomNavScreen()),
     );
   }
 
