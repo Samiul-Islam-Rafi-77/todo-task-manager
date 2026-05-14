@@ -18,7 +18,7 @@ AppBar profileAppBar() {
     title: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Dummu name', style: TextStyle(fontSize: 16, color: Colors.white)),
+        Text('Dummy name', style: TextStyle(fontSize: 16, color: Colors.white)),
         Text(
           'email@gmail.com ',
           style: TextStyle(

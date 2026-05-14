@@ -3,6 +3,7 @@ import 'package:task_manager/ui/screens/cancelled_task_screen.dart';
 import 'package:task_manager/ui/screens/completed_task_screen.dart';
 import 'package:task_manager/ui/screens/in_progress_task_screen.dart';
 import 'package:task_manager/ui/screens/new_task_screen.dart';
+import 'package:task_manager/ui/screens/profile_app_bar.dart';
 import 'package:task_manager/ui/utility/app_colors.dart';
 
 class MainButtomNavScreen extends StatefulWidget {
@@ -25,6 +26,7 @@ class _MainButtomNavScreenState extends State<MainButtomNavScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: profileAppBar(),
       body: _screens[_selectedIndex],
       // bottom navigation part --1st
       bottomNavigationBar: BottomNavigationBar(
