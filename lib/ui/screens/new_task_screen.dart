@@ -41,12 +41,15 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _onTapAddButton,
-
-        child: Icon(Icons.add, color: AppColors.themeColor),
+        backgroundColor: AppColors.themeColor,
+        foregroundColor: Colors.white,
+        child: Icon(Icons.add),
       ),
     );
   }
 }
+
+
 
 class _buildSummarySection extends StatelessWidget {
   const _buildSummarySection({super.key});
