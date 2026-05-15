@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/auth/sign_in_screen.dart';
 import 'package:task_manager/ui/utility/app_colors.dart';
+import 'package:task_manager/ui/utility/app_constants.dart';
 import 'package:task_manager/ui/widgets/background_widget.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -17,6 +18,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _firstNameTEControllar = TextEditingController();
   final TextEditingController _lastNameTEControllar = TextEditingController();
   final TextEditingController _mobileTEControllar = TextEditingController();
+  //from key
+  final GlobalKey<FormState> _fromkey = GlobalKey<FormState>();
+  bool _showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,55 +29,116 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 60),
-                // Nav text
-                Text(
-                  'Join with us',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 24),
-                //Email field
-                TextFormField(
-                  controller: _emailTEControllar,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(hintText: 'Email'),
-                ),
-                const SizedBox(height: 8),
-                //Firstname field
-                TextFormField(
-                  controller: _firstNameTEControllar,
-                  decoration: InputDecoration(hintText: 'First Name'),
-                ),
-                const SizedBox(height: 8),
-                // last name field
-                TextFormField(
-                  controller: _lastNameTEControllar,
-                  decoration: InputDecoration(hintText: 'Last Name'),
-                ),
-                const SizedBox(height: 8),
-                //mobile field
-                TextFormField(
-                  controller: _mobileTEControllar,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(hintText: 'Mobile'),
-                ),
-                const SizedBox(height: 8),
-                //password field
-                TextFormField(
-                  controller: _passwordTEControllar,
-                  decoration: InputDecoration(hintText: 'Password'),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Icon(Icons.arrow_circle_right_outlined, size: 24),
-                ),
-                const SizedBox(height: 36),
-                _buildBackToSignInSection(),
-              ],
+            child: Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              key: _fromkey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 60),
+                  // Nav text
+                  Text(
+                    'Join with us',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 24),
+                  //Email field
+                  TextFormField(
+                    controller: _emailTEControllar,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(hintText: 'Email'),
+
+                    // Email validation
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter your email';
+                      }
+                      if (AppConstants.emailRegExp.hasMatch(value!) == false) {
+                        return 'Enter a valid email address';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  //Firstname field
+                  TextFormField(
+                    controller: _firstNameTEControllar,
+
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter your first name';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  // last name field
+                  TextFormField(
+                    controller: _lastNameTEControllar,
+                    decoration: InputDecoration(hintText: 'Last Name'),
+
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter your last name';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  //mobile field
+                  TextFormField(
+                    controller: _mobileTEControllar,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(hintText: 'Mobile'),
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter your phone Number';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  //password field
+                  TextFormField(
+                    obscureText: _showPassword == false,
+                    controller: _passwordTEControllar,
+                    decoration: InputDecoration(
+                      hintText: 'Password',
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          _showPassword = !_showPassword;
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        },
+                        icon: Icon(
+                          _showPassword
+                              ? Icons.remove_red_eye
+                              : Icons.visibility_off,
+                        ),
+                      ),
+                    ),
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter your valid password';
+                      }
+
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_fromkey.currentState!.validate()) {
+                        // Todo : call registraton api
+                      }
+                    },
+                    child: Icon(Icons.arrow_circle_right_outlined, size: 24),
+                  ),
+                  const SizedBox(height: 36),
+                  _buildBackToSignInSection(),
+                ],
+              ),
             ),
           ),
         ),
@@ -107,10 +172,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _onTabSignInButton() {
-    Navigator.pop(
-      context,
-      MaterialPageRoute(builder: (context) => SignInScreen()),
-    );
+    Navigator.pop(context);
   }
 
   @override
