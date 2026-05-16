@@ -63,6 +63,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   //Firstname field
                   TextFormField(
                     controller: _firstNameTEControllar,
+                    decoration: InputDecoration(hintText: 'First Name'),
 
                     validator: (String? value) {
                       if (value?.trim().isEmpty ?? true) {
