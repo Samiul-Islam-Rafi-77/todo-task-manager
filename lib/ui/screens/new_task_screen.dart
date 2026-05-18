@@ -26,7 +26,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
         child: Column(
           children: [
-            _buildSummarySection(),
+            const _BuildSummarySection(),
             const SizedBox(height: 8),
             Expanded(
               child: ListView.builder(
@@ -51,8 +51,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
 
 
-class _buildSummarySection extends StatelessWidget {
-  const _buildSummarySection({super.key});
+class _BuildSummarySection extends StatelessWidget {
+  const _BuildSummarySection();
 
   @override
   Widget build(BuildContext context) {

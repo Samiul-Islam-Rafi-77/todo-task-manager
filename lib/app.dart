@@ -10,11 +10,11 @@ class TaskManegerApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
-      theme: LightThemeData(),
+      theme: lightThemeData(),
     );
   }
 
-  ThemeData LightThemeData() {
+  ThemeData lightThemeData() {
     //input decoration theme
 
     return ThemeData(

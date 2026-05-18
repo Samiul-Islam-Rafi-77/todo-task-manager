@@ -1,9 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/auth/sign_in_screen.dart';
+import 'package:task_manager/data/model/network_caller/network_caller.dart';
+import 'package:task_manager/data/model/network_response.dart';
+import 'package:task_manager/data/utilites/urls.dart';
 import 'package:task_manager/ui/utility/app_colors.dart';
 import 'package:task_manager/ui/utility/app_constants.dart';
 import 'package:task_manager/ui/widgets/background_widget.dart';
+import 'package:task_manager/ui/widgets/snack_bar_massage.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -18,9 +21,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _firstNameTEControllar = TextEditingController();
   final TextEditingController _lastNameTEControllar = TextEditingController();
   final TextEditingController _mobileTEControllar = TextEditingController();
-  //from key
   final GlobalKey<FormState> _fromkey = GlobalKey<FormState>();
   bool _showPassword = false;
+  bool _registratonInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,19 +39,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 60),
-                  // Nav text
                   Text(
                     'Join with us',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 24),
-                  //Email field
                   TextFormField(
                     controller: _emailTEControllar,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(hintText: 'Email'),
-
-                    // Email validation
+                    decoration: const InputDecoration(hintText: 'Email'),
                     validator: (String? value) {
                       if (value?.trim().isEmpty ?? true) {
                         return 'Enter your email';
@@ -60,11 +59,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                   const SizedBox(height: 8),
-                  //Firstname field
                   TextFormField(
                     controller: _firstNameTEControllar,
-                    decoration: InputDecoration(hintText: 'First Name'),
-
+                    decoration: const InputDecoration(hintText: 'First Name'),
                     validator: (String? value) {
                       if (value?.trim().isEmpty ?? true) {
                         return 'Enter your first name';
@@ -73,11 +70,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                   const SizedBox(height: 8),
-                  // last name field
                   TextFormField(
                     controller: _lastNameTEControllar,
-                    decoration: InputDecoration(hintText: 'Last Name'),
-
+                    decoration: const InputDecoration(hintText: 'Last Name'),
                     validator: (String? value) {
                       if (value?.trim().isEmpty ?? true) {
                         return 'Enter your last name';
@@ -86,20 +81,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                   const SizedBox(height: 8),
-                  //mobile field
                   TextFormField(
                     controller: _mobileTEControllar,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(hintText: 'Mobile'),
+                    decoration: const InputDecoration(hintText: 'Mobile'),
                     validator: (String? value) {
                       if (value?.trim().isEmpty ?? true) {
                         return 'Enter your phone Number';
+                      }
+                      if (AppConstants.mobileRegExp.hasMatch(value!) == false) {
+                        return 'Enter a valid phone number';
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 8),
-                  //password field
                   TextFormField(
                     obscureText: _showPassword == false,
                     controller: _passwordTEControllar,
@@ -123,18 +119,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       if (value?.trim().isEmpty ?? true) {
                         return 'Enter your valid password';
                       }
-
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () {
-                      if (_fromkey.currentState!.validate()) {
-                        // Todo : call registraton api
-                      }
-                    },
-                    child: Icon(Icons.arrow_circle_right_outlined, size: 24),
+                    onPressed: _registratonInProgress
+                        ? null
+                        : () {
+                            if (_fromkey.currentState!.validate()) {
+                              _registerUser();
+                            }
+                          },
+                    child: _registratonInProgress
+                        ? const SizedBox(
+                            height: 24,
+                            width: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                        : const Icon(
+                            Icons.arrow_circle_right_outlined,
+                            size: 24,
+                          ),
                   ),
                   const SizedBox(height: 36),
                   _buildBackToSignInSection(),
@@ -172,19 +183,62 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
+  Future<void> _registerUser() async {
+    _registratonInProgress = true;
+    if (mounted) setState(() {});
+
+    Map<String, dynamic> requestInput = {
+      "email": _emailTEControllar.text.trim(),
+      "firstName": _firstNameTEControllar.text.trim(),
+      "lastName": _lastNameTEControllar.text.trim(),
+      "mobile": _mobileTEControllar.text.trim(),
+      "password": _passwordTEControllar.text,
+      "photo": "",
+    };
+
+    NetworkResponse response = await NetworkCaller.postRequest(
+      Urls.registration,
+      body: requestInput,
+    );
+
+    _registratonInProgress = false;
+    if (mounted) setState(() {});
+
+    if (response.isSuccess) {
+      _clearTextFields();
+      if (mounted) {
+        showSnackBarMassage(context, 'Registration success');
+        Navigator.pop(context); // Successful registration এ Login Screen এ যান
+      }
+    } else {
+      if (mounted) {
+        showSnackBarMassage(
+          context,
+          response.errorMessage ?? 'Registration failed! Try again',
+        );
+      }
+    }
+  }
+
+  void _clearTextFields() {
+    _emailTEControllar.clear();
+    _firstNameTEControllar.clear();
+    _lastNameTEControllar.clear();
+    _passwordTEControllar.clear();
+    _mobileTEControllar.clear();
+  }
+
   void _onTabSignInButton() {
     Navigator.pop(context);
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _emailTEControllar.dispose();
     _firstNameTEControllar.dispose();
     _lastNameTEControllar.dispose();
     _mobileTEControllar.dispose();
     _passwordTEControllar.dispose();
-
     super.dispose();
   }
 }

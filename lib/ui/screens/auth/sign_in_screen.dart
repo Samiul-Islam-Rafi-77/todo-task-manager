@@ -44,7 +44,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   decoration: InputDecoration(hintText: 'Password'),
                 ),
                 const SizedBox(height: 16),
-                //nex page buttom 
+                //nex page buttom
                 ElevatedButton(
                   onPressed: _onTapNextButtom,
                   child: Icon(Icons.arrow_circle_right_outlined, size: 24),
@@ -114,7 +114,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _emailTEControllar.dispose();
     _passwordTEControllar.dispose();
     super.dispose();
